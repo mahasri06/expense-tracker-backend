@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/expenses")
 public class ExpenseController {
@@ -40,6 +43,35 @@ public class ExpenseController {
                 .status(HttpStatus.CREATED)
                 .body(
                         new ApiResponse(true, "Expense Created Successfully", expenseResponse)
+                );
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse> getExpenseByUser_Id(
+            @RequestParam Long userId
+    ){
+        List<Expense> expenses = expenseService.getAllExpenses(userId);
+        List<ExpenseResponse> responses = new ArrayList<>();
+
+        for(Expense expense : expenses){
+            ExpenseResponse expenseResponse = new ExpenseResponse();
+
+            expenseResponse.setId(expense.getId());
+            expenseResponse.setTitle(expense.getTitle());
+            expenseResponse.setAmount(expense.getAmount());
+            expenseResponse.setExpenseDate(expense.getExpenseDate());
+            expenseResponse.setDescription(expense.getDescription());
+            expenseResponse.setCategoryId(expense.getCategory().getId());
+            expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
+            expenseResponse.setCreatedAt(expense.getCreatedAt());
+            expenseResponse.setUpdatedAt(expense.getUpdatedAt());
+
+            responses.add(expenseResponse);
+        }
+        return ResponseEntity.ok(
+                        new ApiResponse(
+                                true, "Expense Retrieved Successfully", responses
+                        )
                 );
     }
 }
