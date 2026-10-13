@@ -101,4 +101,43 @@ public class ExpenseController {
                 )
         );
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateExpense(
+            @PathVariable Long id,
+            @Valid @RequestBody ExpenseRequest expenseRequest,
+            @RequestParam Long userId
+    ){
+        Expense expense = expenseService.updateExpense(id,expenseRequest, userId);
+        ExpenseResponse expenseResponse = new ExpenseResponse();
+
+        expenseResponse.setId(expense.getId());
+        expenseResponse.setTitle(expense.getTitle());
+        expenseResponse.setAmount(expense.getAmount());
+        expenseResponse.setExpenseDate(expense.getExpenseDate());
+        expenseResponse.setDescription(expense.getDescription());
+        expenseResponse.setCategoryId(expense.getCategory().getId());
+        expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
+        expenseResponse.setCreatedAt(expense.getCreatedAt());
+        expenseResponse.setUpdatedAt(expense.getUpdatedAt());
+
+        return ResponseEntity.ok(
+                new ApiResponse(true, "Expense Updated Successfully", expenseResponse)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteExpense(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ){
+        expenseService.deleteExpense(id, userId);
+
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        true, "Expense id: " + id + " deleted successfully",
+                        null
+                )
+        );
+    }
 }

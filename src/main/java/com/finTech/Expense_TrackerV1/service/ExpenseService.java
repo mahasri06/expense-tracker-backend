@@ -57,35 +57,44 @@ public class ExpenseService {
         Category category = categoryRepository
                 .findByIdAndUser_Id(expenseRequest.getCategoryId(), userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Category not found for this User: " + expenseRequest.getCategoryId())
+                        "Category id: " + expenseRequest.getCategoryId() + " not found for this User: " + userId)
                 );
         expense.setCategory(category);
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByIdAndUser_Id(expenseRequest.getPaymentMethodId(), userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Payment Method not found for this User: " + expenseRequest.getPaymentMethodId())
+                        "Payment Method id: " + expenseRequest.getPaymentMethodId() +" not found for this User: " + userId)
                 );
         expense.setPaymentMethod(paymentMethod);
 
         return expenseRepository.save(expense);
     }
 
-    public Expense updateExpense(Expense expense, Long userId){
-        Expense existing = expenseRepository.findByIdAndUser_Id(expense.getId(),userId)
-                        .orElseThrow();
+    public Expense updateExpense(Long id,ExpenseRequest expenseRequest, Long userId){
+        Expense existing = expenseRepository.findByIdAndUser_Id(id,userId)
+                        .orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Expense id: " + id + " not found"
+                ));
 
         Category category = categoryRepository
-                .findByIdAndUser_Id(expense.getCategory().getId(), userId)
-                .orElseThrow();
+                .findByIdAndUser_Id(expenseRequest.getCategoryId(), userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Category id: "+ expenseRequest.getCategoryId()+" not found for this user: " + userId
+                        ));
         PaymentMethod paymentMethod = paymentMethodRepository
-                .findByIdAndUser_Id(expense.getPaymentMethod().getId(), userId)
-                        .orElseThrow();
+                .findByIdAndUser_Id(expenseRequest.getPaymentMethodId(), userId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Payment method id: " + expenseRequest.getPaymentMethodId() +" not found for this user: " + userId
+                                ));
 
-        existing.setTitle(expense.getTitle());
-        existing.setAmount(expense.getAmount());
-        existing.setExpenseDate(expense.getExpenseDate());
-        existing.setDescription(expense.getDescription());
+        existing.setTitle(expenseRequest.getTitle());
+        existing.setAmount(expenseRequest.getAmount());
+        existing.setExpenseDate(expenseRequest.getExpenseDate());
+        existing.setDescription(expenseRequest.getDescription());
         existing.setCategory(category);
         existing.setPaymentMethod(paymentMethod);
 
@@ -95,7 +104,10 @@ public class ExpenseService {
     public void deleteExpense(Long id, Long userId){
         Expense expense = expenseRepository
                 .findByIdAndUser_Id(id, userId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Expense id: " +id +" not found"
+                        ));
 
         expenseRepository.delete(expense);
     }
