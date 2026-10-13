@@ -4,6 +4,7 @@ import com.finTech.Expense_TrackerV1.dto.ExpenseRequest;
 import com.finTech.Expense_TrackerV1.dto.ExpenseResponse;
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import com.finTech.Expense_TrackerV1.exception.ApiResponse;
+import com.finTech.Expense_TrackerV1.exception.ResourceNotFoundException;
 import com.finTech.Expense_TrackerV1.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -73,5 +74,31 @@ public class ExpenseController {
                                 true, "Expense Retrieved Successfully", responses
                         )
                 );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getExpenseById(
+            @PathVariable("id") Long id, @RequestParam Long userId
+    ){
+        Expense expense = expenseService.getExpenseById(id, userId).orElseThrow(() ->
+                new ResourceNotFoundException("Expense id: "+ id + " not found"));
+
+        ExpenseResponse expenseResponse = new ExpenseResponse();
+
+        expenseResponse.setId(expense.getId());
+        expenseResponse.setTitle(expense.getTitle());
+        expenseResponse.setAmount(expense.getAmount());
+        expenseResponse.setExpenseDate(expense.getExpenseDate());
+        expenseResponse.setDescription(expense.getDescription());
+        expenseResponse.setCategoryId(expense.getCategory().getId());
+        expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
+        expenseResponse.setCreatedAt(expense.getCreatedAt());
+        expenseResponse.setUpdatedAt(expense.getUpdatedAt());
+
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        true, "Expense of id: " + id + " retrieved successfully", expenseResponse
+                )
+        );
     }
 }
