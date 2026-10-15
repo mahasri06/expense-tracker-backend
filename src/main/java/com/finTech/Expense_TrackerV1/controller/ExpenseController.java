@@ -1,10 +1,11 @@
 package com.finTech.Expense_TrackerV1.controller;
 
 import com.finTech.Expense_TrackerV1.dto.ExpenseRequest;
+import com.finTech.Expense_TrackerV1.dto.ExpenseRequestMapper;
 import com.finTech.Expense_TrackerV1.dto.ExpenseResponse;
+import com.finTech.Expense_TrackerV1.dto.ExpenseResponseMapper;
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import com.finTech.Expense_TrackerV1.exception.ApiResponse;
-import com.finTech.Expense_TrackerV1.exception.ResourceNotFoundException;
 import com.finTech.Expense_TrackerV1.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,12 @@ import java.util.List;
 @RequestMapping("/expenses")
 public class ExpenseController {
     private final ExpenseService expenseService;
+    private final ExpenseResponseMapper expenseResponseMapper;
 
-    public ExpenseController(ExpenseService expenseService){
+    public ExpenseController(ExpenseService expenseService,
+                             ExpenseResponseMapper expenseResponseMapper){
         this.expenseService =expenseService;
+        this.expenseResponseMapper=expenseResponseMapper;
     }
 
     @PostMapping
@@ -28,17 +32,7 @@ public class ExpenseController {
                                                      @RequestParam Long userId){
         Expense expense = expenseService.createExpense(expenseRequest, userId);
 
-        ExpenseResponse expenseResponse = new ExpenseResponse();
-
-        expenseResponse.setId(expense.getId());
-        expenseResponse.setTitle(expense.getTitle());
-        expenseResponse.setAmount(expense.getAmount());
-        expenseResponse.setExpenseDate(expense.getExpenseDate());
-        expenseResponse.setDescription(expense.getDescription());
-        expenseResponse.setCategoryId(expense.getCategory().getId());
-        expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
-        expenseResponse.setCreatedAt(expense.getCreatedAt());
-        expenseResponse.setUpdatedAt(expense.getUpdatedAt());
+        ExpenseResponse expenseResponse = expenseResponseMapper.toExpenseResponse(expense);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -55,17 +49,7 @@ public class ExpenseController {
         List<ExpenseResponse> responses = new ArrayList<>();
 
         for(Expense expense : expenses){
-            ExpenseResponse expenseResponse = new ExpenseResponse();
-
-            expenseResponse.setId(expense.getId());
-            expenseResponse.setTitle(expense.getTitle());
-            expenseResponse.setAmount(expense.getAmount());
-            expenseResponse.setExpenseDate(expense.getExpenseDate());
-            expenseResponse.setDescription(expense.getDescription());
-            expenseResponse.setCategoryId(expense.getCategory().getId());
-            expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
-            expenseResponse.setCreatedAt(expense.getCreatedAt());
-            expenseResponse.setUpdatedAt(expense.getUpdatedAt());
+            ExpenseResponse expenseResponse = expenseResponseMapper.toExpenseResponse(expense);
 
             responses.add(expenseResponse);
         }
@@ -82,17 +66,7 @@ public class ExpenseController {
     ){
         Expense expense = expenseService.getExpenseById(id, userId);
 
-        ExpenseResponse expenseResponse = new ExpenseResponse();
-
-        expenseResponse.setId(expense.getId());
-        expenseResponse.setTitle(expense.getTitle());
-        expenseResponse.setAmount(expense.getAmount());
-        expenseResponse.setExpenseDate(expense.getExpenseDate());
-        expenseResponse.setDescription(expense.getDescription());
-        expenseResponse.setCategoryId(expense.getCategory().getId());
-        expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
-        expenseResponse.setCreatedAt(expense.getCreatedAt());
-        expenseResponse.setUpdatedAt(expense.getUpdatedAt());
+        ExpenseResponse expenseResponse = expenseResponseMapper.toExpenseResponse(expense);
 
         return ResponseEntity.ok(
                 new ApiResponse(
@@ -108,17 +82,8 @@ public class ExpenseController {
             @RequestParam Long userId
     ){
         Expense expense = expenseService.updateExpense(id,expenseRequest, userId);
-        ExpenseResponse expenseResponse = new ExpenseResponse();
+        ExpenseResponse expenseResponse = expenseResponseMapper.toExpenseResponse(expense);
 
-        expenseResponse.setId(expense.getId());
-        expenseResponse.setTitle(expense.getTitle());
-        expenseResponse.setAmount(expense.getAmount());
-        expenseResponse.setExpenseDate(expense.getExpenseDate());
-        expenseResponse.setDescription(expense.getDescription());
-        expenseResponse.setCategoryId(expense.getCategory().getId());
-        expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
-        expenseResponse.setCreatedAt(expense.getCreatedAt());
-        expenseResponse.setUpdatedAt(expense.getUpdatedAt());
 
         return ResponseEntity.ok(
                 new ApiResponse(true, "Expense Updated Successfully", expenseResponse)

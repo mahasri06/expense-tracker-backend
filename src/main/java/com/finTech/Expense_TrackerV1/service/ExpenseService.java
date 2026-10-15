@@ -1,6 +1,7 @@
 package com.finTech.Expense_TrackerV1.service;
 
 import com.finTech.Expense_TrackerV1.dto.ExpenseRequest;
+import com.finTech.Expense_TrackerV1.dto.ExpenseRequestMapper;
 import com.finTech.Expense_TrackerV1.entity.Category;
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import com.finTech.Expense_TrackerV1.entity.PaymentMethod;
@@ -13,7 +14,6 @@ import com.finTech.Expense_TrackerV1.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ExpenseService {
@@ -22,15 +22,18 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final PaymentMethodRepository paymentMethodRepository;
     private final UserRepository userRepository;
+    private final ExpenseRequestMapper expenseRequestMapper;
 
     public ExpenseService(ExpenseRepository expenseRepository,
                           CategoryRepository categoryRepository,
                           PaymentMethodRepository paymentMethodRepository,
-                          UserRepository userRepository){
+                          UserRepository userRepository,
+                          ExpenseRequestMapper expenseRequestMapper){
         this.expenseRepository= expenseRepository;
         this.categoryRepository = categoryRepository;
         this.paymentMethodRepository = paymentMethodRepository;
         this.userRepository =userRepository;
+        this.expenseRequestMapper= expenseRequestMapper;
     }
 
     public List<Expense> getAllExpenses(Long userId){
@@ -51,10 +54,8 @@ public class ExpenseService {
         );
 
         Expense expense = new Expense();
-        expense.setTitle(expenseRequest.getTitle());
-        expense.setAmount(expenseRequest.getAmount());
-        expense.setExpenseDate(expenseRequest.getExpenseDate());
-        expense.setDescription(expenseRequest.getDescription());
+
+        expenseRequestMapper.mapRequestToExpense(expense, expenseRequest);
 
         expense.setUser(user);
         Category category = categoryRepository
@@ -94,10 +95,7 @@ public class ExpenseService {
                                         "Payment method id: " + expenseRequest.getPaymentMethodId() +" not found for this user: " + userId
                                 ));
 
-        existing.setTitle(expenseRequest.getTitle());
-        existing.setAmount(expenseRequest.getAmount());
-        existing.setExpenseDate(expenseRequest.getExpenseDate());
-        existing.setDescription(expenseRequest.getDescription());
+        expenseRequestMapper.mapRequestToExpense(existing, expenseRequest);
         existing.setCategory(category);
         existing.setPaymentMethod(paymentMethod);
 
