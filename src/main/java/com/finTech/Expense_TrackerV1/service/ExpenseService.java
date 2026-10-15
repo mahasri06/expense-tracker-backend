@@ -37,8 +37,11 @@ public class ExpenseService {
         return expenseRepository.findByUser_Id(userId);
     }
 
-    public Optional<Expense> getExpenseById(Long id, Long userId){
-        return expenseRepository.findByIdAndUser_Id(id, userId);
+    public Expense getExpenseById(Long id, Long userId){
+        return expenseRepository.findByIdAndUser_Id(id, userId).orElseThrow(
+                () -> new ResourceNotFoundException("Expense id: " + id + " for the user: " + userId + " not found")
+        );
+
     }
 
     public Expense createExpense(ExpenseRequest expenseRequest, Long userId){

@@ -80,8 +80,7 @@ public class ExpenseController {
     public ResponseEntity<ApiResponse> getExpenseById(
             @PathVariable("id") Long id, @RequestParam Long userId
     ){
-        Expense expense = expenseService.getExpenseById(id, userId).orElseThrow(() ->
-                new ResourceNotFoundException("Expense id: "+ id + " not found"));
+        Expense expense = expenseService.getExpenseById(id, userId);
 
         ExpenseResponse expenseResponse = new ExpenseResponse();
 
