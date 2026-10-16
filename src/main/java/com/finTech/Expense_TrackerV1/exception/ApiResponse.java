@@ -14,5 +14,7 @@ public class ApiResponse {
 
     private String message;
 
+    private ErrorCode errorCode;
+
     private Object data;
 }

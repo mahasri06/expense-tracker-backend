@@ -6,6 +6,7 @@ import com.finTech.Expense_TrackerV1.entity.Category;
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import com.finTech.Expense_TrackerV1.entity.PaymentMethod;
 import com.finTech.Expense_TrackerV1.entity.User;
+import com.finTech.Expense_TrackerV1.exception.ErrorCode;
 import com.finTech.Expense_TrackerV1.exception.ResourceNotFoundException;
 import com.finTech.Expense_TrackerV1.repository.CategoryRepository;
 import com.finTech.Expense_TrackerV1.repository.ExpenseRepository;
@@ -37,12 +38,19 @@ public class ExpenseService {
     }
 
     public List<Expense> getAllExpenses(Long userId){
+        userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "User not found with id: " + userId,
+                        ErrorCode.USER_NOT_FOUND
+                )
+        );
         return expenseRepository.findByUser_Id(userId);
     }
 
     public Expense getExpenseById(Long id, Long userId){
         return expenseRepository.findByIdAndUser_Id(id, userId).orElseThrow(
-                () -> new ResourceNotFoundException("Expense id: " + id + " for the user: " + userId + " not found")
+                () -> new ResourceNotFoundException("Expense id: " + id + " for the user: " + userId + " not found",
+                        ErrorCode.EXPENSE_NOT_FOUND)
         );
 
     }
@@ -50,7 +58,8 @@ public class ExpenseService {
     public Expense createExpense(ExpenseRequest expenseRequest, Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with id: " + userId)
+                        "User not found with id: " + userId,
+                        ErrorCode.USER_NOT_FOUND)
         );
 
         Expense expense = new Expense();
@@ -61,14 +70,16 @@ public class ExpenseService {
         Category category = categoryRepository
                 .findByIdAndUser_Id(expenseRequest.getCategoryId(), userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Category id: " + expenseRequest.getCategoryId() + " not found for this User: " + userId)
+                        "Category id: " + expenseRequest.getCategoryId() + " not found for this User: " + userId,
+                        ErrorCode.CATEGORY_NOT_FOUND)
                 );
         expense.setCategory(category);
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByIdAndUser_Id(expenseRequest.getPaymentMethodId(), userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Payment Method id: " + expenseRequest.getPaymentMethodId() +" not found for this User: " + userId)
+                        "Payment Method id: " + expenseRequest.getPaymentMethodId() +" not found for this User: " + userId,
+                        ErrorCode.PAYMENT_METHOD_NOT_FOUND)
                 );
         expense.setPaymentMethod(paymentMethod);
 
@@ -79,20 +90,23 @@ public class ExpenseService {
         Expense existing = expenseRepository.findByIdAndUser_Id(id,userId)
                         .orElseThrow(() ->
                 new ResourceNotFoundException(
-                        "Expense id: " + id + " not found"
+                        "Expense id: " + id + " not found",
+                        ErrorCode.EXPENSE_NOT_FOUND
                 ));
 
         Category category = categoryRepository
                 .findByIdAndUser_Id(expenseRequest.getCategoryId(), userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Category id: "+ expenseRequest.getCategoryId()+" not found for this user: " + userId
+                                "Category id: "+ expenseRequest.getCategoryId()+" not found for this user: " + userId,
+                                ErrorCode.CATEGORY_NOT_FOUND
                         ));
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByIdAndUser_Id(expenseRequest.getPaymentMethodId(), userId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Payment method id: " + expenseRequest.getPaymentMethodId() +" not found for this user: " + userId
+                                        "Payment method id: " + expenseRequest.getPaymentMethodId() +" not found for this user: " + userId,
+                                        ErrorCode.PAYMENT_METHOD_NOT_FOUND
                                 ));
 
         expenseRequestMapper.mapRequestToExpense(existing, expenseRequest);
@@ -107,7 +121,8 @@ public class ExpenseService {
                 .findByIdAndUser_Id(id, userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Expense id: " +id +" not found"
+                                "Expense id: " +id +" not found",
+                                ErrorCode.EXPENSE_NOT_FOUND
                         ));
 
         expenseRepository.delete(expense);

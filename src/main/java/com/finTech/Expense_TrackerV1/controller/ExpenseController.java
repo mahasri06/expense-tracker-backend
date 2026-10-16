@@ -1,7 +1,6 @@
 package com.finTech.Expense_TrackerV1.controller;
 
 import com.finTech.Expense_TrackerV1.dto.ExpenseRequest;
-import com.finTech.Expense_TrackerV1.dto.ExpenseRequestMapper;
 import com.finTech.Expense_TrackerV1.dto.ExpenseResponse;
 import com.finTech.Expense_TrackerV1.dto.ExpenseResponseMapper;
 import com.finTech.Expense_TrackerV1.entity.Expense;
@@ -37,7 +36,7 @@ public class ExpenseController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
-                        new ApiResponse(true, "Expense Created Successfully", expenseResponse)
+                        new ApiResponse(true, "Expense Created Successfully",null, expenseResponse)
                 );
     }
 
@@ -55,7 +54,7 @@ public class ExpenseController {
         }
         return ResponseEntity.ok(
                         new ApiResponse(
-                                true, "Expense Retrieved Successfully", responses
+                                true, "Expense Retrieved Successfully",null, responses
                         )
                 );
     }
@@ -70,7 +69,7 @@ public class ExpenseController {
 
         return ResponseEntity.ok(
                 new ApiResponse(
-                        true, "Expense of id: " + id + " retrieved successfully", expenseResponse
+                        true, "Expense of id: " + id + " retrieved successfully",null,  expenseResponse
                 )
         );
     }
@@ -86,7 +85,7 @@ public class ExpenseController {
 
 
         return ResponseEntity.ok(
-                new ApiResponse(true, "Expense Updated Successfully", expenseResponse)
+                new ApiResponse(true, "Expense Updated Successfully",null , expenseResponse)
         );
     }
 
@@ -100,6 +99,7 @@ public class ExpenseController {
         return ResponseEntity.ok(
                 new ApiResponse(
                         true, "Expense id: " + id + " deleted successfully",
+                        null,
                         null
                 )
         );

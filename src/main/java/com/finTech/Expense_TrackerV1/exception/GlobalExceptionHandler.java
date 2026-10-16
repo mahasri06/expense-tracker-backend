@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(
-                        new ApiResponse(false, exception.getMessage(), null)
+                        new ApiResponse(false, exception.getMessage(),exception.getErrorCode(), null)
                 );
     }
 
@@ -30,7 +30,8 @@ public class GlobalExceptionHandler {
                                 .getFieldErrors()
                                 .get(0)
                                 .getDefaultMessage()
-                                , null)
+                                ,ErrorCode.VALIDATION_ERROR
+                                ,null)
                 );
     }
 }
