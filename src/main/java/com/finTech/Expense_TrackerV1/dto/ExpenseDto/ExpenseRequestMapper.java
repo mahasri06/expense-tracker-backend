@@ -1,4 +1,4 @@
-package com.finTech.Expense_TrackerV1.dto;
+package com.finTech.Expense_TrackerV1.dto.ExpenseDto;
 
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import org.springframework.stereotype.Component;

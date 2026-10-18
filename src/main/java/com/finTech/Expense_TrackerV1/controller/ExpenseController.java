@@ -1,8 +1,8 @@
 package com.finTech.Expense_TrackerV1.controller;
 
-import com.finTech.Expense_TrackerV1.dto.ExpenseRequest;
-import com.finTech.Expense_TrackerV1.dto.ExpenseResponse;
-import com.finTech.Expense_TrackerV1.dto.ExpenseResponseMapper;
+import com.finTech.Expense_TrackerV1.dto.ExpenseDto.ExpenseRequest;
+import com.finTech.Expense_TrackerV1.dto.ExpenseDto.ExpenseResponse;
+import com.finTech.Expense_TrackerV1.dto.ExpenseDto.ExpenseResponseMapper;
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import com.finTech.Expense_TrackerV1.exception.ApiResponse;
 import com.finTech.Expense_TrackerV1.service.ExpenseService;

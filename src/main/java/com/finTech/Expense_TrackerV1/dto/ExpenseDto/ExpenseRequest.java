@@ -1,4 +1,4 @@
-package com.finTech.Expense_TrackerV1.dto;
+package com.finTech.Expense_TrackerV1.dto.ExpenseDto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

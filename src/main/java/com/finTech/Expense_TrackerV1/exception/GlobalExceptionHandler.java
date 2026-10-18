@@ -23,15 +23,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValid(
             MethodArgumentNotValidException exception
     ){
+        String message = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.joining("; "));
+
+        if (message.isBlank()) {
+            message = "Validation failed. Please check your request.";
+        }
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(
-                        new ApiResponse(false, exception.getBindingResult()
-                                .getFieldErrors()
-                                .get(0)
-                                .getDefaultMessage()
-                                ,ErrorCode.VALIDATION_ERROR
-                                ,null)
+                        new ApiResponse(
+                                false,
+                                message,
+                                ErrorCode.VALIDATION_ERROR,
+                                null
+                        )
                 );
     }
 }

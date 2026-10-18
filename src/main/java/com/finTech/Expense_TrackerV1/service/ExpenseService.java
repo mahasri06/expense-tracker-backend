@@ -1,7 +1,7 @@
 package com.finTech.Expense_TrackerV1.service;
 
-import com.finTech.Expense_TrackerV1.dto.ExpenseRequest;
-import com.finTech.Expense_TrackerV1.dto.ExpenseRequestMapper;
+import com.finTech.Expense_TrackerV1.dto.ExpenseDto.ExpenseRequest;
+import com.finTech.Expense_TrackerV1.dto.ExpenseDto.ExpenseRequestMapper;
 import com.finTech.Expense_TrackerV1.entity.Category;
 import com.finTech.Expense_TrackerV1.entity.Expense;
 import com.finTech.Expense_TrackerV1.entity.PaymentMethod;

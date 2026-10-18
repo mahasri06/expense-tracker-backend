@@ -1,4 +1,4 @@
-package com.finTech.Expense_TrackerV1.dto;
+package com.finTech.Expense_TrackerV1.dto.ExpenseDto;
 
 import lombok.Getter;
 import lombok.Setter;
