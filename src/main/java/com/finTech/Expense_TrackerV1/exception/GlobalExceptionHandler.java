@@ -3,6 +3,7 @@ package com.finTech.Expense_TrackerV1.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -54,6 +55,24 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(
                         new ApiResponse(false, duplicateResourceException.getMessage(), duplicateResourceException.getErrorCode(),null)
+                );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse> handleMissingRequestParameter(
+            MissingServletRequestParameterException exception
+    ) {
+        String message = exception.getParameterName() + " is required";
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        new ApiResponse(
+                                false,
+                                message,
+                                ErrorCode.VALIDATION_ERROR,
+                                null
+                        )
                 );
     }
 }

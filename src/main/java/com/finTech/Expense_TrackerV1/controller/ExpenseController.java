@@ -53,10 +53,10 @@ public class ExpenseController {
             responses.add(expenseResponse);
         }
         return ResponseEntity.ok(
-                        new ApiResponse(
-                                true, "Expense Retrieved Successfully",null, responses
-                        )
-                );
+                new ApiResponse(
+                        true, "Expense Retrieved Successfully",null, responses
+                )
+        );
     }
 
     @GetMapping("/{id}")
