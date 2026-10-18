@@ -3,6 +3,7 @@ package com.finTech.Expense_TrackerV1.service;
 import com.finTech.Expense_TrackerV1.dto.CategoryDto.CategoryRequest;
 import com.finTech.Expense_TrackerV1.entity.Category;
 import com.finTech.Expense_TrackerV1.entity.User;
+import com.finTech.Expense_TrackerV1.exception.DuplicateResourceException;
 import com.finTech.Expense_TrackerV1.exception.ErrorCode;
 import com.finTech.Expense_TrackerV1.exception.ResourceNotFoundException;
 import com.finTech.Expense_TrackerV1.repository.CategoryRepository;
@@ -45,10 +46,50 @@ public class CategoryService {
                         ErrorCode.USER_NOT_FOUND)
         );
 
+        boolean existingCheck = categoryRepository.existsByUser_IdAndName(userId, categoryRequest.getName());
+
+        if(existingCheck){
+            throw new DuplicateResourceException(
+                    "Category already exists",ErrorCode.CATEGORY_ALREADY_IN_USE
+            );
+        }
+
         Category category = new Category();
         category.setName(categoryRequest.getName());
         category.setUser(user);
 
         return categoryRepository.save(category);
+    }
+
+    public Category updateCategory(
+            CategoryRequest request,
+            Long id,
+            Long userId
+    ){
+        Category category = categoryRepository.findByIdAndUser_Id(
+                id, userId
+        ).orElseThrow(
+                () -> new ResourceNotFoundException("Category id: " + id + " not found",
+                        ErrorCode.CATEGORY_NOT_FOUND)
+        );
+        boolean existingCheck = categoryRepository.existsByUser_IdAndName(userId, request.getName());
+
+        if(existingCheck){
+            throw new DuplicateResourceException(
+                    "Category already exists",ErrorCode.CATEGORY_ALREADY_IN_USE
+            );
+        }
+
+        category.setName(request.getName());
+
+        return categoryRepository.save(category);
+    }
+
+    public void deleteCategory(Long id, Long userId){
+        Category category = categoryRepository.findByIdAndUser_Id(id, userId).orElseThrow(
+                () -> new ResourceNotFoundException("Category id: "+ id + " not found", ErrorCode.CATEGORY_NOT_FOUND)
+        );
+
+        categoryRepository.delete(category);
     }
 }

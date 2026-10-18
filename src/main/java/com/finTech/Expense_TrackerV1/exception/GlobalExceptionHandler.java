@@ -45,4 +45,15 @@ public class GlobalExceptionHandler {
                         )
                 );
     }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiResponse> CategoryAlreadyExists(
+            DuplicateResourceException duplicateResourceException
+    ){
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(
+                        new ApiResponse(false, duplicateResourceException.getMessage(), duplicateResourceException.getErrorCode(),null)
+                );
+    }
 }

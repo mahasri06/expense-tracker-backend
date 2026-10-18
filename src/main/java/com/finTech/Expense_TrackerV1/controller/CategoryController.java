@@ -88,4 +88,37 @@ public class CategoryController {
                         new ApiResponse(true, "Category created successfully", null, categoryResponse)
                 );
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateCategory(
+            @Valid @RequestBody CategoryRequest categoryRequest,
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ){
+        Category category = categoryService.updateCategory(
+                categoryRequest, id, userId
+        );
+        CategoryResponse categoryResponse = new CategoryResponse();
+
+        categoryResponse.setId(category.getId());
+        categoryResponse.setName(category.getName());
+        categoryResponse.setCreatedAt(category.getCreatedAt());
+        categoryResponse.setUpdatedAt(category.getUpdatedAt());
+
+        return ResponseEntity.ok(
+                new ApiResponse(true, "Category updated successfully", null, categoryResponse)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteCategory(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ){
+        categoryService.deleteCategory(id, userId);
+
+        return ResponseEntity.ok(
+                        new ApiResponse(true, "Category deleted successfully", null, null)
+                );
+    }
 }
