@@ -44,11 +44,11 @@ public class ExpenseService {
                         ErrorCode.USER_NOT_FOUND
                 )
         );
-        return expenseRepository.findByUser_Id(userId);
+        return expenseRepository.findByUser_IdWithDetails(userId);
     }
 
     public Expense getExpenseById(Long id, Long userId){
-        return expenseRepository.findByIdAndUser_Id(id, userId).orElseThrow(
+        return expenseRepository.findByIdAndUser_IdWithDetails(id, userId).orElseThrow(
                 () -> new ResourceNotFoundException("Expense id: " + id + " for the user: " + userId + " not found",
                         ErrorCode.EXPENSE_NOT_FOUND)
         );

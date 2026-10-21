@@ -13,8 +13,8 @@ public class ExpenseResponseMapper {
         expenseResponse.setAmount(expense.getAmount());
         expenseResponse.setExpenseDate(expense.getExpenseDate());
         expenseResponse.setDescription(expense.getDescription());
-        expenseResponse.setCategoryId(expense.getCategory().getId());
-        expenseResponse.setPaymentMethodId(expense.getPaymentMethod().getId());
+        expenseResponse.setCategoryName(expense.getCategory().getName());
+        expenseResponse.setPaymentMethodName(expense.getPaymentMethod().getName());
         expenseResponse.setCreatedAt(expense.getCreatedAt());
         expenseResponse.setUpdatedAt(expense.getUpdatedAt());
 

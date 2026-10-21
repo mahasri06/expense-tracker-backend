@@ -20,9 +20,9 @@ public class ExpenseResponse {
 
     private String description;
 
-    private Long categoryId;
+    private String categoryName;
 
-    private Long paymentMethodId;
+    private String paymentMethodName;
 
     private LocalDateTime createdAt;
 
